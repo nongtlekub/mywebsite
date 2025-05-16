@@ -14,15 +14,35 @@
     align-items: center;
     background-color: #ffe4ec; /* ชมพูอ่อน */
     position: relative;
+    text-align: center;
   }
 
   #text {
-    font-size: 18vw;  /* ปรับขนาดตามความกว้างหน้าจอ */
-    white-space: nowrap;
+    font-size: 18vw;  /* ขนาดปรับตามความกว้างหน้าจอ */
     user-select: none;
     position: relative;
     color: white;
     overflow: visible;
+    white-space: nowrap;
+  }
+
+  /* บนมือถือให้แสดงหลายบรรทัด และข้อความเป็น block */
+  @media (max-width: 600px) {
+    #text {
+      font-size: 25vw;  /* ฟ้อนต์ใหญ่ขึ้นสำหรับมือถือ */
+      white-space: normal;
+      line-height: 1.1;
+    }
+    .char {
+      display: inline-block;
+      animation: bounce 1.6s ease-in-out infinite;
+    }
+    /* แทรกบรรทัดใหม่หลังคำที่ต้องการ */
+    .line-break {
+      display: block;
+      width: 100%;
+      height: 0; /* เพื่อไม่เพิ่มช่องว่าง */
+    }
   }
 
   .char {
@@ -80,6 +100,7 @@
   @media (min-width: 800px) {
     #text {
       font-size: 160px;
+      white-space: nowrap;
     }
   }
 </style>
@@ -92,27 +113,37 @@
 <script>
   const textElement = document.getElementById("text");
 
-  const letters = ['เติ้','ล','ร','ั','ก','ป','ุ๋','ย','น','้','า','า'];
+  // แบ่งข้อความเป็น 4 ชุด เพื่อขึ้นบรรทัดใหม่บนมือถือ
+  const words = [
+    ['เติ้','ล'],       // บรรทัด 1
+    ['ร','ั','ก'],      // บรรทัด 2 (สีชมพู)
+    ['ป','ุ๋','ย'],    // บรรทัด 3
+    ['น','้','า','า']   // บรรทัด 4
+  ];
 
-  function getColor(index) {
-    if (index >= 2 && index <= 4) return 'pink-text';
+  function getColor(lineIndex, charIndex) {
+    // บรรทัดที่ 2 คำว่า "รัก" เป็นสีชมพู
+    if(lineIndex === 1) return 'pink-text';
     return 'white-text';
   }
 
-  let i = 0;
-  function typeWriter() {
-    if (i < letters.length) {
+  // สร้างข้อความตามคำแบ่งบรรทัด
+  words.forEach((line, lineIndex) => {
+    line.forEach((char, charIndex) => {
       const span = document.createElement('span');
-      span.classList.add('char', getColor(i));
-      span.textContent = letters[i];
-      span.style.setProperty('--i', i);
+      span.classList.add('char', getColor(lineIndex, charIndex));
+      span.textContent = char;
+      // กำหนด delay animation แต่ละตัว
+      span.style.setProperty('--i', lineIndex * 10 + charIndex);
       textElement.appendChild(span);
-      i++;
-      setTimeout(typeWriter, 150);
+    });
+    // เพิ่ม break line สำหรับมือถือ (ไม่แสดงบนคอม)
+    if(lineIndex < words.length -1){
+      const br = document.createElement('span');
+      br.classList.add('line-break');
+      textElement.appendChild(br);
     }
-  }
-
-  typeWriter();
+  });
 </script>
 
 </body>
