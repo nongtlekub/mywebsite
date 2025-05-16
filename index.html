@@ -12,50 +12,35 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #ffe4ec; /* ชมพูอ่อน */
+    background-color: #ffe4ec;
     position: relative;
     text-align: center;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   #text {
-    font-size: 18vw;  /* ขนาดปรับตามความกว้างหน้าจอ */
+    font-size: 18vw;
     user-select: none;
-    position: relative;
-    color: white;
     overflow: visible;
-    white-space: nowrap;
+    line-height: 1.1;
+    z-index: 1;
   }
 
-  /* บนมือถือให้แสดงหลายบรรทัด และข้อความเป็น block */
-  @media (max-width: 600px) {
-    #text {
-      font-size: 25vw;  /* ฟ้อนต์ใหญ่ขึ้นสำหรับมือถือ */
-      white-space: normal;
-      line-height: 1.1;
-    }
-    .char {
-      display: inline-block;
-      animation: bounce 1.6s ease-in-out infinite;
-    }
-    /* แทรกบรรทัดใหม่หลังคำที่ต้องการ */
-    .line-break {
-      display: block;
-      width: 100%;
-      height: 0; /* เพื่อไม่เพิ่มช่องว่าง */
-    }
+  .line {
+    display: block;
+    margin: 0.2em 0;
   }
 
   .char {
     display: inline-block;
     position: relative;
     animation: bounce 1.6s ease-in-out infinite;
-  }
-
-  .char:nth-child(odd) {
-    animation-delay: calc(var(--i) * 0.15s);
-  }
-  .char:nth-child(even) {
-    animation-delay: calc(var(--i) * 0.15s + 0.08s);
+    text-shadow:
+      -5px -5px 0 #000,
+       5px -5px 0 #000,
+      -5px  5px 0 #000,
+       5px  5px 0 #000;
   }
 
   @keyframes bounce {
@@ -67,14 +52,6 @@
     }
   }
 
-  .white-text, .pink-text {
-    text-shadow:
-      -5px -5px 0 #000,
-       5px -5px 0 #000,
-      -5px  5px 0 #000,
-       5px  5px 0 #000;
-  }
-
   .white-text {
     color: white;
   }
@@ -83,24 +60,40 @@
     color: #ff69b4;
   }
 
-  /* สไตล์ข้อความมุมขวาล่าง */
   #footer-text {
     position: fixed;
     bottom: 10px;
     right: 15px;
     font-size: 1.2rem;
-    color: #444; /* สีเทาเข้ม */
+    color: #444;
     font-weight: 700;
     user-select: none;
-    text-shadow:
-      1px 1px 1px rgba(255, 255, 255, 0.7);
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.7);
+    z-index: 1;
   }
 
-  /* จำกัดขนาดฟ้อนต์บนจอใหญ่ */
+  .float-emoji {
+    position: absolute;
+    pointer-events: none;
+    animation: fall linear forwards;
+    z-index: 0;
+    opacity: 0.8;
+  }
+
+  @keyframes fall {
+    0% {
+      transform: translateY(-10vh) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(110vh) scale(1.2);
+      opacity: 0;
+    }
+  }
+
   @media (min-width: 800px) {
     #text {
       font-size: 160px;
-      white-space: nowrap;
     }
   }
 </style>
@@ -113,37 +106,67 @@
 <script>
   const textElement = document.getElementById("text");
 
-  // แบ่งข้อความเป็น 4 ชุด เพื่อขึ้นบรรทัดใหม่บนมือถือ
-  const words = [
-    ['เติ้','ล'],       // บรรทัด 1
-    ['ร','ั','ก'],      // บรรทัด 2 (สีชมพู)
-    ['ป','ุ๋','ย'],    // บรรทัด 3
-    ['น','้','า','า']   // บรรทัด 4
+  const lines = [
+    ['เติ้ล'],
+    ['ร','ั','ก'],
+    ['ป','ุ๋','ย'],
+    ['น','้','า','า']
   ];
 
-  function getColor(lineIndex, charIndex) {
-    // บรรทัดที่ 2 คำว่า "รัก" เป็นสีชมพู
-    if(lineIndex === 1) return 'pink-text';
-    return 'white-text';
+  let lineIndex = 0;
+  let charIndex = 0;
+  let currentLineDiv = null;
+
+  function getColor(lineIdx) {
+    return lineIdx === 1 ? 'pink-text' : 'white-text';
   }
 
-  // สร้างข้อความตามคำแบ่งบรรทัด
-  words.forEach((line, lineIndex) => {
-    line.forEach((char, charIndex) => {
-      const span = document.createElement('span');
-      span.classList.add('char', getColor(lineIndex, charIndex));
-      span.textContent = char;
-      // กำหนด delay animation แต่ละตัว
-      span.style.setProperty('--i', lineIndex * 10 + charIndex);
-      textElement.appendChild(span);
-    });
-    // เพิ่ม break line สำหรับมือถือ (ไม่แสดงบนคอม)
-    if(lineIndex < words.length -1){
-      const br = document.createElement('span');
-      br.classList.add('line-break');
-      textElement.appendChild(br);
+  function typeNextChar() {
+    if (lineIndex >= lines.length) return;
+
+    if (!currentLineDiv) {
+      currentLineDiv = document.createElement('div');
+      currentLineDiv.classList.add('line');
+      textElement.appendChild(currentLineDiv);
     }
-  });
+
+    const currentLine = lines[lineIndex];
+
+    if (charIndex < currentLine.length) {
+      const span = document.createElement('span');
+      span.classList.add('char', getColor(lineIndex));
+      span.textContent = currentLine[charIndex];
+      currentLineDiv.appendChild(span);
+      charIndex++;
+      setTimeout(typeNextChar, 120);
+    } else {
+      lineIndex++;
+      charIndex = 0;
+      currentLineDiv = null;
+      setTimeout(typeNextChar, 300);
+    }
+  }
+
+  typeNextChar();
+
+  // อีโมจิหัวใจและกบ
+  const floatEmojis = ['❤️', '💖', '🐸', '💕', '💘'];
+
+  function createFloatingEmoji() {
+    const emoji = document.createElement("div");
+    emoji.classList.add("float-emoji");
+    emoji.textContent = floatEmojis[Math.floor(Math.random() * floatEmojis.length)];
+
+    emoji.style.left = Math.random() * 100 + "vw";
+    emoji.style.fontSize = (Math.random() * 16 + 16) + "px"; // 16px - 32px
+    emoji.style.animationDuration = (6 + Math.random() * 4) + "s"; // 6-10s
+
+    document.body.appendChild(emoji);
+
+    setTimeout(() => emoji.remove(), 12000);
+  }
+
+  setInterval(createFloatingEmoji, 100); // ปล่อยอีโมจิทุก 0.5 วินาที
 </script>
 
 </body>
