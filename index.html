@@ -17,7 +17,7 @@
   }
 
   #text {
-    font-size: 20rem;
+    font-size: 18vw;  /* ปรับขนาดตามความกว้างหน้าจอ */
     white-space: nowrap;
     user-select: none;
     position: relative;
@@ -74,6 +74,13 @@
     user-select: none;
     text-shadow:
       1px 1px 1px rgba(255, 255, 255, 0.7);
+  }
+
+  /* จำกัดขนาดฟ้อนต์บนจอใหญ่ */
+  @media (min-width: 800px) {
+    #text {
+      font-size: 160px;
+    }
   }
 </style>
 </head>
