@@ -94,6 +94,13 @@
     animation-timing-function: linear;
     animation-iteration-count: infinite;
   }
+  
+  .kiss {
+    color: #ff69b4;
+    animation-name: fallKiss;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
 
   @keyframes fallHeart {
     0% {
@@ -107,6 +114,17 @@
   }
 
   @keyframes fallFrog {
+    0% {
+      transform: translateY(-10vh) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(110vh) scale(1.2);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes fallKiss {
     0% {
       transform: translateY(-10vh) scale(1);
       opacity: 1;
@@ -200,13 +218,16 @@
     }, (parseFloat(el.style.animationDuration) * 1000) + 100);
   }
 
-  // สร้างอิโมจิทั้งหัวใจและกบ รวม 6 ชิ้น/ชนิด ทุก 0.5 วินาที
+  // สร้างอิโมจิหัวใจ กบ และจุ๊บ รวม 6 ชิ้น/ชนิด ทุก 0.5 วินาที
   setInterval(() => {
     for (let i = 0; i < 6; i++) {
       createEmoji("heart", "❤️");
     }
     for (let i = 0; i < 6; i++) {
       createEmoji("frog", "🐸");
+    }
+    for (let i = 0; i < 6; i++) {
+      createEmoji("kiss", "😘");
     }
   }, 500);
 
