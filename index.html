@@ -20,7 +20,7 @@
   }
 
   #text {
-    font-size: calc(18vw + 8px); /* เพิ่มขนาดข้อความ +8px */
+    font-size: calc(18vw + 8px);
     user-select: none;
     overflow: visible;
     line-height: 1.1;
@@ -77,7 +77,7 @@
     pointer-events: none;
     animation: fall linear forwards;
     z-index: 0;
-    opacity: 0.8;
+    opacity: 0.9;
   }
 
   @keyframes fall {
@@ -86,14 +86,14 @@
       opacity: 1;
     }
     100% {
-      transform: translateY(110vh) scale(1.2);
+      transform: translateY(110vh) scale(1.3);
       opacity: 0;
     }
   }
 
   @media (min-width: 800px) {
     #text {
-      font-size: calc(160px + 8px); /* เพิ่มขนาดข้อความ +8px บนจอใหญ่ */
+      font-size: calc(160px + 8px);
     }
   }
 </style>
@@ -149,7 +149,7 @@
 
   typeNextChar();
 
-  // อีโมจิหัวใจและกบ เพิ่มจำนวนเยอะขึ้น
+  // อีโมจิหัวใจและกบ เพิ่มจำนวนเยอะ ๆ ให้เต็มจอมากขึ้น
   const floatEmojis = ['❤️', '💖', '🐸', '💕', '💘'];
 
   function createFloatingEmoji() {
@@ -158,16 +158,16 @@
     emoji.textContent = floatEmojis[Math.floor(Math.random() * floatEmojis.length)];
 
     emoji.style.left = Math.random() * 100 + "vw";
-    emoji.style.fontSize = (Math.random() * 16 + 16) + "px"; // 16px - 32px
-    emoji.style.animationDuration = (6 + Math.random() * 4) + "s"; // 6-10s
+    emoji.style.fontSize = (Math.random() * 24 + 16) + "px"; // 16px - 40px
+    emoji.style.animationDuration = (10 + Math.random() * 8) + "s"; // 10-18s
 
     document.body.appendChild(emoji);
 
-    setTimeout(() => emoji.remove(), 12000);
+    setTimeout(() => emoji.remove(), 20000);
   }
 
-  // ปล่อยอีโมจิถี่ขึ้น ให้ไหลเต็มจอแบบช้าๆ
-  setInterval(createFloatingEmoji, 150); // ทุก 150ms
+  // ปล่อยอีโมจิถี่ขึ้นทุก 20 มิลลิวินาที
+  setInterval(createFloatingEmoji, 20);
 </script>
 
 </body>
