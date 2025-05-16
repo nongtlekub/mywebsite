@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<title>เติ้ลรักปุ๋ยน้าา</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@700&display=swap');
+
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    font-family: 'Noto Sans Thai', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffe4ec; /* ชมพูอ่อน */
+    position: relative;
+  }
+
+  #text {
+    font-size: 20rem;
+    white-space: nowrap;
+    user-select: none;
+    position: relative;
+    color: white;
+    overflow: visible;
+  }
+
+  .char {
+    display: inline-block;
+    position: relative;
+    animation: bounce 1.6s ease-in-out infinite;
+  }
+
+  .char:nth-child(odd) {
+    animation-delay: calc(var(--i) * 0.15s);
+  }
+  .char:nth-child(even) {
+    animation-delay: calc(var(--i) * 0.15s + 0.08s);
+  }
+
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-15px);
+    }
+  }
+
+  .white-text, .pink-text {
+    text-shadow:
+      -5px -5px 0 #000,
+       5px -5px 0 #000,
+      -5px  5px 0 #000,
+       5px  5px 0 #000;
+  }
+
+  .white-text {
+    color: white;
+  }
+
+  .pink-text {
+    color: #ff69b4;
+  }
+
+  /* สไตล์ข้อความมุมขวาล่าง */
+  #footer-text {
+    position: fixed;
+    bottom: 10px;
+    right: 15px;
+    font-size: 1.2rem;
+    color: #444; /* สีเทาเข้ม */
+    font-weight: 700;
+    user-select: none;
+    text-shadow:
+      1px 1px 1px rgba(255, 255, 255, 0.7);
+  }
+</style>
+</head>
+<body>
+
+<div id="text"></div>
+<div id="footer-text">Made by Tle</div>
+
+<script>
+  const textElement = document.getElementById("text");
+
+  const letters = ['เติ้','ล','ร','ั','ก','ป','ุ๋','ย','น','้','า','า'];
+
+  function getColor(index) {
+    if (index >= 2 && index <= 4) return 'pink-text';
+    return 'white-text';
+  }
+
+  let i = 0;
+  function typeWriter() {
+    if (i < letters.length) {
+      const span = document.createElement('span');
+      span.classList.add('char', getColor(i));
+      span.textContent = letters[i];
+      span.style.setProperty('--i', i);
+      textElement.appendChild(span);
+      i++;
+      setTimeout(typeWriter, 150);
+    }
+  }
+
+  typeWriter();
+</script>
+
+</body>
+</html>
