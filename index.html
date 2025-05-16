@@ -2,17 +2,14 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8" />
-<title>อิโมจิไหลเต็มจอ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>อิโมจิไหลเต็มจอมือถือ</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@700&display=swap');
-
   html, body {
     margin: 0; padding: 0; height: 100%;
     overflow: hidden;
-    background-color: #ffe4ec;
-    font-family: 'Noto Sans Thai', sans-serif;
+    background: #ffe4ec;
   }
-
   #emoji-container {
     position: fixed;
     top: 0; left: 0;
@@ -22,20 +19,18 @@
     overflow: hidden;
     z-index: 0;
   }
-
   .emoji {
-    position: absolute;
-    font-size: 24px;
+    position: fixed;
+    font-size: 36px; /* เพิ่มขนาดอิโมจิ */
     user-select: none;
     animation-name: fall;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
-    opacity: 0.8;
+    opacity: 0.85;
   }
-
   @keyframes fall {
     0% {
-      transform: translateY(-30px);
+      transform: translateY(-50px);
       opacity: 1;
     }
     100% {
@@ -43,7 +38,6 @@
       opacity: 0;
     }
   }
-
   #text-container {
     position: relative;
     z-index: 10;
@@ -54,7 +48,6 @@
     flex-direction: column;
     text-align: center;
   }
-
   #text {
     font-size: calc(18vw + 8px);
     line-height: 1.1;
@@ -66,26 +59,21 @@
       -5px  5px 0 #000,
        5px  5px 0 #000;
   }
-
   .line {
     display: block;
     margin: 0.2em 0;
   }
-
   .char {
     display: inline-block;
     position: relative;
     animation: bounce 1.6s ease-in-out infinite;
   }
-
   .white-text {
     color: white;
   }
-
   .pink-text {
     color: #ff69b4;
   }
-
   @keyframes bounce {
     0%, 100% {
       transform: translateY(0);
@@ -119,7 +107,6 @@
     return lineIdx === 1 ? 'pink-text' : 'white-text';
   }
 
-  // พิมพ์ข้อความทีละตัว
   let lineIndex = 0;
   let charIndex = 0;
   let currentLineDiv = null;
@@ -152,37 +139,36 @@
 
   typeNextChar();
 
-  // สร้างอิโมจิไหลเต็มจอ
+  // สร้างอิโมจิให้เต็มจอมือถือแน่นอน
   const emojis = ['❤️', '💖', '🐸', '💕', '💘'];
-  const emojiCount = 100; // จำนวนอิโมจิไหลเต็มจอ
+  const emojiCount = 150;
 
   function createEmoji() {
     const emoji = document.createElement('div');
     emoji.classList.add('emoji');
     emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
 
-    // ตำแหน่งสุ่มแนวนอนเต็มจอ
-    emoji.style.left = Math.random() * 100 + 'vw';
+    // ใช้ตำแหน่งแบบ fixed คุมด้วย px แทน vw เพื่อให้แม่นยำกว่าในมือถือ
+    const screenWidth = window.innerWidth;
+    const xPos = Math.random() * screenWidth;
+    emoji.style.left = `${xPos}px`;
 
-    // ความเร็วสุ่ม (5-12 วินาที)
-    const duration = 5 + Math.random() * 7;
-    emoji.style.animationDuration = duration + 's';
+    const duration = 4 + Math.random() * 6;
+    emoji.style.animationDuration = `${duration}s`;
 
-    // เริ่มตกจากตำแหน่งสุ่มบนหน้าจอ (ค่าลบเล็กน้อย)
-    emoji.style.top = (-30 - Math.random() * 100) + 'px';
+    // เริ่มต้นจากบนสุดแบบสุ่มสูงกว่าหน้าจอเล็กน้อย
+    emoji.style.top = `${-50 - Math.random() * 150}px`;
 
     emojiContainer.appendChild(emoji);
 
-    // ลบ element เมื่อจบอนิเมชัน
     setTimeout(() => {
       emoji.remove();
-      createEmoji(); // สร้างใหม่เพื่อให้ไหลต่อเนื่อง
+      createEmoji();
     }, duration * 1000);
   }
 
-  // เริ่มสร้างอิโมจิทีละตัวจนเต็มจำนวน
   for(let i = 0; i < emojiCount; i++) {
-    setTimeout(createEmoji, i * 150);
+    setTimeout(createEmoji, i * 100);
   }
 </script>
 
