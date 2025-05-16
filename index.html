@@ -180,9 +180,8 @@
     el.classList.add(className);
     el.textContent = emoji;
     el.style.left = Math.random() * 100 + "vw";
-    // ไหลช้าลงนิดหน่อย 5-8 วินาที
+    el.style.top = "-10vh";
     el.style.animationDuration = (Math.random() * 3 + 5) + "s";
-
     document.body.appendChild(el);
 
     setTimeout(() => {
@@ -190,15 +189,15 @@
     }, (parseFloat(el.style.animationDuration) * 1000) + 100);
   }
 
-  // ลดจำนวนลงเหลือ 6 ชิ้นต่อชนิด ทุก 0.5 วินาที
+  // ลดจำนวนลงเหลือ 4 ชิ้นต่อชนิด ทุก 0.6 วินาที เพื่อไม่ให้แล็ค
   setInterval(() => {
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 4; i++) {
       createEmoji("heart", "❤️");
     }
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 4; i++) {
       createEmoji("frog", "🐸");
     }
-  }, 500);
+  }, 600);
 
 </script>
 
