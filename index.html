@@ -2,78 +2,47 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>อิโมจิไหลเต็มจอมือถือ</title>
+<title>เติ้ลรักปุ๋ยน้าา</title>
+<link href="https://fonts.googleapis.com/css2?family=Sriracha&display=swap" rel="stylesheet" />
 <style>
   html, body {
     margin: 0; padding: 0; height: 100%;
-    overflow: hidden;
-    background: #ffe4ec;
-  }
-  #emoji-container {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    overflow: hidden;
-    z-index: 0;
-  }
-  .emoji {
-    position: fixed;
-    font-size: 36px; /* เพิ่มขนาดอิโมจิ */
-    user-select: none;
-    animation-name: fall;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    opacity: 0.85;
-  }
-  @keyframes fall {
-    0% {
-      transform: translateY(-50px);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(110vh);
-      opacity: 0;
-    }
-  }
-  #text-container {
-    position: relative;
-    z-index: 10;
-    height: 100vh;
+    font-family: 'Sriracha', cursive, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
+    background-color: #ffe4ec;
+    position: relative;
     text-align: center;
+    flex-direction: column;
+    overflow: hidden;
   }
+
   #text {
-    font-size: calc(18vw + 8px);
-    line-height: 1.1;
+    font-size: calc(20vw + 10px);
     user-select: none;
+    overflow: visible;
+    line-height: 1.1;
+    z-index: 1;
     color: white;
     text-shadow:
-      -5px -5px 0 #000,
-       5px -5px 0 #000,
-      -5px  5px 0 #000,
-       5px  5px 0 #000;
+      -4px -4px 0 #000,
+       4px -4px 0 #000,
+      -4px  4px 0 #000,
+       4px  4px 0 #000;
   }
+
   .line {
     display: block;
-    margin: 0.2em 0;
+    margin: 0.15em 0;
   }
+
   .char {
     display: inline-block;
     position: relative;
     animation: bounce 1.6s ease-in-out infinite;
   }
-  .white-text {
-    color: white;
-  }
-  .pink-text {
-    color: #ff69b4;
-  }
+
   @keyframes bounce {
     0%, 100% {
       transform: translateY(0);
@@ -82,19 +51,86 @@
       transform: translateY(-15px);
     }
   }
+
+  .white-text {
+    color: white;
+  }
+
+  .pink-text {
+    color: #ff69b4;
+  }
+
+  #footer-text {
+    position: fixed;
+    bottom: 10px;
+    right: 15px;
+    font-size: 1.2rem;
+    color: #444;
+    font-weight: 700;
+    user-select: none;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.7);
+    z-index: 1;
+  }
+
+  .heart, .frog {
+    position: absolute;
+    font-size: 28px;
+    pointer-events: none;
+    z-index: 0;
+    user-select: none;
+    will-change: transform;
+  }
+
+  .heart {
+    color: #ff5ca7;
+    animation-name: fallHeart;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  .frog {
+    color: #4CAF50;
+    animation-name: fallFrog;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes fallHeart {
+    0% {
+      transform: translateY(-10vh) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(110vh) scale(1.2);
+      opacity: 0;
+    }
+  }
+
+  @keyframes fallFrog {
+    0% {
+      transform: translateY(-10vh) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(110vh) scale(1.2);
+      opacity: 0;
+    }
+  }
+
+  @media (min-width: 800px) {
+    #text {
+      font-size: 180px;
+    }
+  }
 </style>
 </head>
 <body>
 
-<div id="emoji-container"></div>
-
-<div id="text-container">
-  <div id="text"></div>
-</div>
+<div id="text"></div>
+<div id="footer-text">Made by Tle</div>
 
 <script>
   const textElement = document.getElementById("text");
-  const emojiContainer = document.getElementById("emoji-container");
 
   const lines = [
     ['เติ้ล'],
@@ -103,13 +139,13 @@
     ['น','้','า','า']
   ];
 
-  function getColor(lineIdx) {
-    return lineIdx === 1 ? 'pink-text' : 'white-text';
-  }
-
   let lineIndex = 0;
   let charIndex = 0;
   let currentLineDiv = null;
+
+  function getColor(lineIdx) {
+    return lineIdx === 1 ? 'pink-text' : 'white-text';
+  }
 
   function typeNextChar() {
     if (lineIndex >= lines.length) return;
@@ -139,37 +175,31 @@
 
   typeNextChar();
 
-  // สร้างอิโมจิให้เต็มจอมือถือแน่นอน
-  const emojis = ['❤️', '💖', '🐸', '💕', '💘'];
-  const emojiCount = 150;
+  function createEmoji(className, emoji) {
+    const el = document.createElement("div");
+    el.classList.add(className);
+    el.textContent = emoji;
+    el.style.left = Math.random() * 100 + "vw";
+    // ไหลช้าลงเป็น 4-7 วินาที
+    el.style.animationDuration = (Math.random() * 3 + 4) + "s";
 
-  function createEmoji() {
-    const emoji = document.createElement('div');
-    emoji.classList.add('emoji');
-    emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-
-    // ใช้ตำแหน่งแบบ fixed คุมด้วย px แทน vw เพื่อให้แม่นยำกว่าในมือถือ
-    const screenWidth = window.innerWidth;
-    const xPos = Math.random() * screenWidth;
-    emoji.style.left = `${xPos}px`;
-
-    const duration = 4 + Math.random() * 6;
-    emoji.style.animationDuration = `${duration}s`;
-
-    // เริ่มต้นจากบนสุดแบบสุ่มสูงกว่าหน้าจอเล็กน้อย
-    emoji.style.top = `${-50 - Math.random() * 150}px`;
-
-    emojiContainer.appendChild(emoji);
+    document.body.appendChild(el);
 
     setTimeout(() => {
-      emoji.remove();
-      createEmoji();
-    }, duration * 1000);
+      el.remove();
+    }, (parseFloat(el.style.animationDuration) * 1000) + 100);
   }
 
-  for(let i = 0; i < emojiCount; i++) {
-    setTimeout(createEmoji, i * 100);
-  }
+  // สร้างทีละเยอะเต็มจอทุก 0.3 วินาที
+  setInterval(() => {
+    for (let i = 0; i < 20; i++) {
+      createEmoji("heart", "❤️");
+    }
+    for (let i = 0; i < 20; i++) {
+      createEmoji("frog", "🐸");
+    }
+  }, 300);
+
 </script>
 
 </body>
